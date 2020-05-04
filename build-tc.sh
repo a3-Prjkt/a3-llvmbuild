@@ -30,7 +30,7 @@ sudo apt install --no-install-recommends -y \
         xz-utils \
         zlib1g-dev
 
-set -euo pipefail
+set -eo pipefail
 
 # Variable(s)
 NAME="Æ3"
