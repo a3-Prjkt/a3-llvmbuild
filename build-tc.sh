@@ -16,6 +16,8 @@ msg "Building LLVM..."
 	--shallow-clone \
 	--incremental \
 	--build-type "Release" \
+	--pgo \
+	--lto thin \
 
 # Build binutils
 msg "Building binutils..."
