@@ -10,13 +10,13 @@ function msg() {
 # Build LLVM
 msg "Building LLVM..."
 ./build-llvm.py \
-	--clang-vendor "a3-Clang" \
+	--clang-vendor "Æ3-Clang" \
 	--projects "clang;lld;polly" \
 	--targets "ARM;AArch64" \
 	--shallow-clone \
 	--incremental \
-	--lto thin
-	--build-type "Release" \
+	--lto thin \
+	--build-type "Release" 2>&1 | tee build.log
 
 # Build binutils
 msg "Building binutils..."
