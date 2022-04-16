@@ -3,3 +3,4 @@
 *.pyc
 llvm-project/
 build/
+build.log
