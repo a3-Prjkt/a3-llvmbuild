@@ -10,14 +10,13 @@ function msg() {
 # Build LLVM
 msg "Building LLVM..."
 ./build-llvm.py \
-	--clang-vendor "Azure" \
+	--clang-vendor "a3-Clang" \
 	--projects "clang;lld;polly" \
 	--targets "ARM;AArch64" \
 	--shallow-clone \
 	--incremental \
+	--lto thin
 	--build-type "Release" \
-	--pgo \
-	--lto thin \
 
 # Build binutils
 msg "Building binutils..."
