@@ -30,7 +30,6 @@ msg "Building LLVM for $NAME..."
 	--targets "ARM;AArch64" \
 	--shallow-clone \
 	--incremental \
-	--lto thin \
 	--build-type "Release" 2>&1 | tee build.log
 
 # Check if the final clang binary exists or not.
