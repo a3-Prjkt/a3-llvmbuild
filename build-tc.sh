@@ -2,15 +2,18 @@
 
 set -euo pipefail
 
+# Variable(s)
+NAME="Æ3-Clang"
+
 # Function to show an informational message
 function msg() {
     echo -e "\e[1;32m$*\e[0m"
 }
 
 # Build LLVM
-msg "Building LLVM..."
+msg "Building LLVM for $NAME..."
 ./build-llvm.py \
-	--clang-vendor "Æ3-Clang" \
+	--clang-vendor "$NAME" \
 	--projects "clang;lld;polly" \
 	--targets "ARM;AArch64" \
 	--shallow-clone \
@@ -19,7 +22,7 @@ msg "Building LLVM..."
 	--build-type "Release" 2>&1 | tee build.log
 
 # Build binutils
-msg "Building binutils..."
+msg "Building binutils for $NAME..."
 ./build-binutils.py --targets arm aarch64
 
 # Remove unused products
