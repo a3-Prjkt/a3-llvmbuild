@@ -1,9 +1,36 @@
 #!/usr/bin/env bash
 
+# Install or Update Dependencies. Added no installs recommends to eliminate not necessary things
+sudo apt update && sudo apt upgrade -y
+sudo apt install --no-install-recommends -y \
+        bc \
+        bison \
+        ca-certificates \
+        clang \
+        cmake \
+        curl \
+        file \
+        flex \
+        gcc \
+        g++ \
+        git \
+        libelf-dev \
+        libssl-dev \
+        lld \
+        make \
+        ninja-build \
+        python3 \
+        texinfo \
+        xz-utils \
+        zlib1g-dev
+
 set -euo pipefail
 
 # Variable(s)
 NAME="Æ3-Clang"
+llvm_commit_url="https://github.com/llvm/llvm-project/commit/$short_llvm_commit"
+binutils_ver="$(ls | grep "^binutils-" | sed "s/binutils-//g")"
+clang_version="$(install/bin/clang --version | head -n1 | cut -d' ' -f4)"
 
 # Function to show an informational message
 msg() {
@@ -68,10 +95,6 @@ pushd llvm-project || exit
 llvm_commit="$(git rev-parse HEAD)"
 short_llvm_commit="$(cut -c-8 <<< "$llvm_commit")"
 popd || exit
-
-llvm_commit_url="https://github.com/llvm/llvm-project/commit/$short_llvm_commit"
-binutils_ver="$(ls | grep "^binutils-" | sed "s/binutils-//g")"
-clang_version="$(install/bin/clang --version | head -n1 | cut -d' ' -f4)"
 
 echo "Finished Building $NAME"
 echo "Clang Version: $clang_version"
