@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+if [[ $1 = "--clean" ]]; then
+rm -rf llvm-project \
+       install \
+       build
+fi
+
 # Install or Update Dependencies. Added no installs recommends to eliminate not necessary things
 sudo apt update && sudo apt upgrade -y
 sudo apt install --no-install-recommends -y \
@@ -26,14 +32,8 @@ sudo apt install --no-install-recommends -y \
 
 set -euo pipefail
 
-if [[ $1 = "--clean" ]]; then
-rm -rf llvm-project \
-       install \
-       build
-fi
-
 # Variable(s)
-NAME="Æ3-Clang"
+NAME="Æ3"
 
 # Function to show an informational message
 function msg() {
