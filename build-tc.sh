@@ -26,6 +26,12 @@ sudo apt install --no-install-recommends -y \
 
 set -euo pipefail
 
+if [[ $1 = "--clean" ]]; then
+rm -rf llvm-project \
+       install \
+       build
+fi
+
 # Variable(s)
 NAME="Æ3-Clang"
 
