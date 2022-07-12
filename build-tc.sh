@@ -47,7 +47,6 @@ msg "Building LLVM for $NAME..."
         --branch release/14.x \
 	--projects "clang;lld;polly" \
 	--targets "ARM;AArch64" \
-	--shallow-clone \
 	--incremental 2>&1 | tee build.log 
 
 # Build binutils
