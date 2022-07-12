@@ -44,6 +44,7 @@ function msg() {
 msg "Building LLVM for $NAME..."
 ./build-llvm.py \
 	--clang-vendor "$NAME" \
+        --branch release/14.x \
 	--projects "clang;lld;polly" \
 	--targets "ARM;AArch64" \
 	--shallow-clone \
