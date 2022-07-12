@@ -48,8 +48,7 @@ msg "Building LLVM for $NAME..."
 	--projects "clang;lld;polly" \
 	--targets "ARM;AArch64" \
 	--shallow-clone \
-	--incremental \
-	--build-type "Release" 2>&1 | tee build.log
+	--incremental 2>&1 | tee build.log 
 
 # Build binutils
 msg "Building binutils for $NAME..."
