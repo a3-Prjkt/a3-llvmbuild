@@ -28,7 +28,8 @@ sudo apt install --no-install-recommends -y \
         python3 \
         texinfo \
         xz-utils \
-        zlib1g-dev
+        zlib1g-dev \
+        patchelf
 
 set -eo pipefail
 
