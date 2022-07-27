@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 if [[ $1 = "--clean" ]]; then
-rm -rf llvm-project \
-       install \
+rm -rf install \
        build
 fi
 
