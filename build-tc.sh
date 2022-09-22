@@ -46,12 +46,13 @@ msg "Building LLVM for $NAME..."
 	--clang-vendor "$NAME" \
         --branch release/15.x \
 	--projects "clang;lld;compiler-rt;polly" \
-	--targets "ARM;AArch64" \
+	--targets "AArch64;ARM;X86" \
+        --pgo "kernel-defconfig" \
 	--incremental 2>&1 | tee build.log
 
 # Build binutils
 msg "Building binutils for $NAME..."
-./build-binutils.py --targets arm aarch64
+./build-binutils.py --targets aarch64 arm x86_64
 
 # Remove unused products
 msg "Removing unused products..."
