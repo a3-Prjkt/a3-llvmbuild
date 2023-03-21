@@ -45,7 +45,7 @@ msg "Building LLVM for $NAME..."
 ./build-llvm.py \
 	--clang-vendor "$NAME" \
         --defines LLVM_PARALLEL_COMPILE_JOBS=$(nproc) LLVM_PARALLEL_LINK_JOBS=$(nproc) CMAKE_C_FLAGS=-O3 CMAKE_CXX_FLAGS=-O3 \
-        --branch release/15.x \
+        --branch release/16.x \
 	--projects "clang;lld;compiler-rt;polly" \
 	--targets "AArch64;ARM;X86" \
         --pgo "kernel-defconfig" \
