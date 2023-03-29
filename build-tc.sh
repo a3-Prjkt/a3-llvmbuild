@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-if [[ $1 = "--clean" ]]; then
-rm -rf install \
-       build
-fi
 
 # Install or Update Dependencies. Added no installs recommends to eliminate not necessary things
 sudo apt update && sudo apt upgrade -y
@@ -11,6 +7,7 @@ sudo apt install --no-install-recommends -y \
         bc \
         bison \
         ca-certificates \
+        ccache \
         clang \
         cmake \
         curl \
@@ -49,13 +46,13 @@ function msg() {
 # Build LLVM
 msg "Building LLVM for $NAME..."
 ./build-llvm.py \
-	--clang-vendor "$NAME" \
+	--vendor-string "$NAME" \
         --defines LLVM_PARALLEL_COMPILE_JOBS=$(nproc) LLVM_PARALLEL_LINK_JOBS=$(nproc) CMAKE_C_FLAGS=-O3 CMAKE_CXX_FLAGS=-O3 \
-        --branch release/16.x \
+        --ref release/16.x \
 	--projects "clang;lld;compiler-rt;polly" \
-	--targets "AArch64;ARM;X86" \
+	--targets AArch64 ARM X86 \
         --pgo "kernel-defconfig" \
-	--incremental 2>&1 | tee build.log
+        --install-folder $PWD/install 2>&1 | tee build.log
 
 # Build binutils
 msg "Building binutils for $NAME..."
