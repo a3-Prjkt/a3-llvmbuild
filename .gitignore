@@ -1,10 +1,8 @@
 /.idea/
+/build/
 /venv/
 *.pyc
-llvm-project/
-build/
 build.log
 k.txt
 install/
 push*.sh
-binutils*/
