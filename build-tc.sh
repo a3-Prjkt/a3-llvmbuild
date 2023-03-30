@@ -28,9 +28,9 @@ sudo apt install --no-install-recommends -y \
         patchelf
 
 pushd ~ || exit
-wget https://github.com/Kitware/CMake/releases/download/v3.26.0/cmake-3.26.0-linux-x86_64.sh
-sudo sh cmake-3.26.0-linux-x86_64.sh --prefix=/usr/local --exclude-subdir
-rm -rf cmake-3.26.0-linux-x86_64.sh
+wget https://github.com/Kitware/CMake/releases/download/v3.26.2/cmake-3.26.2-linux-x86_64.sh
+sudo sh cmake-3.26.2-linux-x86_64.sh --prefix=/usr/local --exclude-subdir
+rm -rf cmake-3.26.2-linux-x86_64.sh
 popd || exit
 
 set -eo pipefail
