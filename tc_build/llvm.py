@@ -10,13 +10,15 @@ import shutil
 import subprocess
 import time
 
-# Allows being imported via tc_build package or directly in REPL
-try:
-    from builder import Builder
-    import utils
-except ModuleNotFoundError:
-    from .builder import Builder
-    from . import utils
+from tc_build.builder import Builder
+import tc_build.utils
+
+
+def get_all_targets(llvm_folder):
+    contents = Path(llvm_folder, 'llvm/CMakeLists.txt').read_text(encoding='utf-8')
+    if not (match := re.search(r'set\(LLVM_ALL_TARGETS([\w|\s]+)\)', contents)):
+        raise RuntimeError('Could not find LLVM_ALL_TARGETS?')
+    return [val for target in match.group(1).splitlines() if (val := target.strip())]
 
 
 class LLVMBuilder(Builder):
@@ -47,7 +49,7 @@ class LLVMBuilder(Builder):
         if self.can_use_perf():
             mode = 'sampling'
 
-        utils.print_header(f"Performing BOLT with {mode}")
+        tc_build.utils.print_header(f"Performing BOLT with {mode}")
 
         # clang-#: original binary
         # clang.bolt: BOLT optimized binary
@@ -92,7 +94,7 @@ class LLVMBuilder(Builder):
 
             with bolt_profile.open('w', encoding='utf-8') as out_file, \
                  merge_fdata_log.open('w', encoding='utf-8') as err_file:
-                utils.print_info('Merging .fdata files, this might take a while...')
+                tc_build.utils.print_info('Merging .fdata files, this might take a while...')
                 subprocess.run([self.tools.merge_fdata, *list(fdata_files)],
                                check=True,
                                stderr=err_file,
@@ -148,7 +150,7 @@ class LLVMBuilder(Builder):
             check_targets = [f"check-{target}" for target in self.check_targets]
             self.run_cmd([*ninja_cmd, *check_targets])
 
-        utils.print_info(f"Build duration: {utils.get_duration(build_start)}")
+        tc_build.utils.print_info(f"Build duration: {tc_build.utils.get_duration(build_start)}")
 
         if self.bolt:
             self.bolt_clang()
@@ -159,7 +161,7 @@ class LLVMBuilder(Builder):
             else:
                 install_targets = ['install']
             self.run_cmd([*ninja_cmd, *install_targets], capture_output=True)
-            utils.create_gitignore(self.folders.install)
+            tc_build.utils.create_gitignore(self.folders.install)
 
     def can_use_perf(self):
         # Make sure perf is in the environment
@@ -217,7 +219,7 @@ class LLVMBuilder(Builder):
                 self.cmake_defines['CMAKE_C_COMPILER_LAUNCHER'] = 'ccache'
                 self.cmake_defines['CMAKE_CXX_COMPILER_LAUNCHER'] = 'ccache'
             else:
-                utils.print_warning(
+                tc_build.utils.print_warning(
                     'ccache requested but could not be found on your system, ignoring...')
 
         if self.tools.clang_tblgen:
@@ -309,7 +311,7 @@ class LLVMBuilder(Builder):
         if not (bin_folder := Path(install_folder, 'bin')).exists():
             raise RuntimeError('bin folder does not exist in installation folder, run build()?')
 
-        utils.print_header('LLVM installation information')
+        tc_build.utils.print_header('LLVM installation information')
         install_info = (f"Toolchain is available at: {install_folder}\n\n"
                         'To use, either run:\n\n'
                         f"\t$ export PATH={bin_folder}:$PATH\n\n"
@@ -322,7 +324,7 @@ class LLVMBuilder(Builder):
             if (binary := Path(bin_folder, tool)).exists():
                 subprocess.run([binary, '--version'], check=True)
                 print()
-        utils.flush_std_err_out()
+        tc_build.utils.flush_std_err_out()
 
     def validate_targets(self):
         if not self.folders.source:
@@ -330,10 +332,7 @@ class LLVMBuilder(Builder):
         if not self.targets:
             raise RuntimeError('No targets set?')
 
-        contents = Path(self.folders.source, 'llvm/CMakeLists.txt').read_text(encoding='utf-8')
-        if not (match := re.search(r'set\(LLVM_ALL_TARGETS([\w|\s]+)\)', contents)):
-            raise RuntimeError('Could not find LLVM_ALL_TARGETS?')
-        all_targets = [val for target in match.group(1).splitlines() if (val := target.strip())]
+        all_targets = get_all_targets(self.folders.source)
 
         for target in self.targets:
             if target in ('all', 'host'):
@@ -486,13 +485,19 @@ class LLVMSourceManager:
         return ['clang', 'compiler-rt', 'lld', 'polly']
 
     def default_targets(self):
-        return ['AArch64', 'ARM', 'BPF', 'Hexagon', 'Mips', 'PowerPC', 'RISCV', 'SystemZ', 'X86']
+        all_targets = get_all_targets(self.repo)
+        targets = ['AArch64', 'ARM', 'BPF', 'Hexagon', 'Mips', 'PowerPC', 'RISCV', 'SystemZ', 'X86']
+
+        if 'LoongArch' in all_targets:
+            targets.append('LoongArch')
+
+        return targets
 
     def download(self, ref, shallow=False):
         if self.repo.exists():
             return
 
-        utils.print_header('Downloading LLVM')
+        tc_build.utils.print_header('Downloading LLVM')
 
         git_clone = ['git', 'clone']
         if shallow:
@@ -527,7 +532,7 @@ class LLVMSourceManager:
         return True
 
     def update(self, ref):
-        utils.print_header('Updating LLVM')
+        tc_build.utils.print_header('Updating LLVM')
 
         self.git(['fetch', 'origin'])
 
