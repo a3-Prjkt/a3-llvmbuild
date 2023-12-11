@@ -48,10 +48,9 @@ msg "Building LLVM for $NAME..."
 ./build-llvm.py \
 	--vendor-string "$NAME" \
         --defines LLVM_PARALLEL_COMPILE_JOBS=$(nproc) LLVM_PARALLEL_LINK_JOBS=$(nproc) CMAKE_C_FLAGS=-O3 CMAKE_CXX_FLAGS=-O3 \
-        --ref release/16.x \
+        --ref release/17.x \
 	--projects "clang;lld;compiler-rt;polly" \
 	--targets AArch64 ARM X86 \
-        --pgo "kernel-defconfig" \
         --install-folder $PWD/install 2>&1 | tee build.log
 
 # Build binutils
